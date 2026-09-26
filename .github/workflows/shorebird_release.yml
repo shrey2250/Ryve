@@ -31,6 +31,7 @@ jobs:
         uses: shorebirdtech/setup-shorebird@v1
         with:
           cache: true
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew || true
