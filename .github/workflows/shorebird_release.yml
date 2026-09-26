@@ -42,7 +42,7 @@ jobs:
         run: flutter test
 
       - name: Shorebird Release Android APK
-        run: shorebird release android --artifact=apk --force
+        run: shorebird release android --artifact=apk -- --no-tree-shake-icons --android-skip-build-dependency-validation
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4

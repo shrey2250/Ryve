@@ -42,4 +42,4 @@ jobs:
         run: flutter test
 
       - name: Shorebird Patch Android
-        run: shorebird patch android --force
+        run: shorebird patch android -- --no-tree-shake-icons --android-skip-build-dependency-validation
