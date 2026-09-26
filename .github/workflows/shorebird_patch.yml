@@ -1,0 +1,37 @@
+name: Shorebird Patch Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  patch:
+    name: Build & Deploy Shorebird Patch (Over-The-Air)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Shorebird
+        uses: shorebirdtech/actions/setup-shorebird@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew || true
+
+      - name: Install Dependencies
+        run: shorebird flutter pub get
+
+      - name: Run Tests
+        run: shorebird flutter test
+
+      - name: Shorebird Patch Android
+        run: shorebird patch android --no-confirm
