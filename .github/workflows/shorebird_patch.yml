@@ -30,10 +30,10 @@ jobs:
         run: chmod +x android/gradlew || true
 
       - name: Install Dependencies
-        run: shorebird flutter pub get
+        run: flutter pub get
 
       - name: Run Tests
-        run: shorebird flutter test
+        run: flutter test
 
       - name: Shorebird Patch Android
-        run: shorebird patch android --no-confirm
+        run: shorebird patch android --force
