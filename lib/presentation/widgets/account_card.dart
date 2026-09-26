@@ -23,8 +23,6 @@ class AccountCard extends StatelessWidget {
         return (AppColors.onlineColor, AppColors.lentLight);
       case AccountType.bank:
         return (AppColors.bankColor, AppColors.primaryLight);
-      case AccountType.upi:
-        return (AppColors.upiColor, AppColors.borrowedLight);
       case AccountType.cash:
         return (AppColors.cashColor, AppColors.incomeLight);
       case AccountType.creditCard:

@@ -3,9 +3,8 @@ import 'package:equatable/equatable.dart';
 /// Account types in RYVE
 enum AccountType {
   cash('cash', 'Cash', '💵'),
-  online('online', 'Online', '🌐'),
+  online('upi', 'Online', '🌐'),
   bank('bank', 'Bank', '🏦'),
-  upi('upi', 'UPI', '📱'),
   creditCard('credit_card', 'Credit Card', '💳'),
   other('other', 'Other', '🪙');
 
@@ -15,11 +14,15 @@ enum AccountType {
   final String label;
   final String icon;
 
-  static AccountType fromValue(String value) =>
-      AccountType.values.firstWhere(
-        (t) => t.value == value,
-        orElse: () => AccountType.other,
-      );
+  static AccountType fromValue(String value) {
+    if (value == 'online' || value == 'upi') {
+      return AccountType.online;
+    }
+    return AccountType.values.firstWhere(
+      (t) => t.value == value,
+      orElse: () => AccountType.other,
+    );
+  }
 }
 
 /// Pure domain entity — no SQLite dependencies.
@@ -55,8 +58,6 @@ class Account extends Equatable {
         return 0xe351; // language / globe
       case AccountType.bank:
         return 0xe040; // account_balance
-      case AccountType.upi:
-        return 0xe4a2; // phone_android
       case AccountType.creditCard:
         return 0xe19f; // credit_card
       case AccountType.cash:

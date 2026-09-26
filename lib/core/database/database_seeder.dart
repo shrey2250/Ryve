@@ -71,24 +71,26 @@ abstract final class DatabaseSeeder {
     if (existing.isNotEmpty) {
       final hasOnline = await db.query(
         DatabaseSchema.accounts,
-        where: 'type = ? OR name = ?',
-        whereArgs: ['online', 'Online'],
+        where: 'name = ?',
+        whereArgs: ['Online'],
         limit: 1,
       );
       if (hasOnline.isEmpty) {
-        await db.insert(
-          DatabaseSchema.accounts,
-          {
-            'id': _uuid.v4(),
-            'name': 'Online',
-            'type': 'online',
-            'balancePaise': 0,
-            'currency': 'INR',
-            'isArchived': 0,
-            'createdAt': now,
-            'updatedAt': now,
-          },
-        );
+        try {
+          await db.insert(
+            DatabaseSchema.accounts,
+            {
+              'id': _uuid.v4(),
+              'name': 'Online',
+              'type': 'upi',
+              'balancePaise': 0,
+              'currency': 'INR',
+              'isArchived': 0,
+              'createdAt': now,
+              'updatedAt': now,
+            },
+          );
+        } catch (_) {}
       }
       return;
     }
@@ -109,19 +111,21 @@ abstract final class DatabaseSeeder {
     );
 
     // Seed default Online account
-    await db.insert(
-      DatabaseSchema.accounts,
-      {
-        'id': _uuid.v4(),
-        'name': 'Online',
-        'type': 'online',
-        'balancePaise': 0,
-        'currency': 'INR',
-        'isArchived': 0,
-        'createdAt': now,
-        'updatedAt': now,
-      },
-    );
+    try {
+      await db.insert(
+        DatabaseSchema.accounts,
+        {
+          'id': _uuid.v4(),
+          'name': 'Online',
+          'type': 'upi',
+          'balancePaise': 0,
+          'currency': 'INR',
+          'isArchived': 0,
+          'createdAt': now,
+          'updatedAt': now,
+        },
+      );
+    } catch (_) {}
   }
 
   // ─── Settings ─────────────────────────────────────────────────────────────

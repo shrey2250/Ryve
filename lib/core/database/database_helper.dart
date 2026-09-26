@@ -74,7 +74,11 @@ class DatabaseHelper {
   }
 
   Future<void> _onOpen(Database db) async {
-    await DatabaseSeeder.seed(db);
+    try {
+      await DatabaseSeeder.seed(db);
+    } catch (e) {
+      debugPrint('[DatabaseHelper] OnOpen seeding skipped: $e');
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
