@@ -7,9 +7,11 @@ import '../../core/providers/settings_providers.dart';
 import '../../core/providers/transaction_providers.dart';
 import '../../core/services/backup_restore_service.dart';
 import '../../core/services/csv_export_service.dart';
+import '../../core/services/update_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import '../../presentation/widgets/update_dialog.dart';
 import 'pin_setup_dialog.dart';
 
 /// Settings Screen - App Lock, Backup/Restore, CSV Export, Theme, and Currency preferences.
@@ -289,13 +291,80 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: AppSpacing.xl),
 
+          // System & Updates Section
+          const Text('SYSTEM & UPDATES', style: AppTypography.caption),
+          const SizedBox(height: AppSpacing.xs),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              border: Border.all(color: AppColors.borderSubtle),
+              boxShadow: AppColors.shadowSm,
+            ),
+            child: Consumer(
+              builder: (context, ref, _) {
+                final updateState = ref.watch(updateServiceProvider);
+                final patchNumber = updateState.currentPatchNumber;
+                final isChecking = updateState.state == UpdateCheckState.checking;
+
+                return ListTile(
+                  leading: isChecking
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                        )
+                      : const Icon(Icons.system_update_rounded, color: AppColors.primary),
+                  title: const Text('Check for Updates', style: AppTypography.bodyMedium),
+                  subtitle: Text(
+                    patchNumber != null
+                        ? 'v1.0.0 (Patch #$patchNumber) • Tap to check'
+                        : 'Over-The-Air Update Engine • Tap to check',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  ),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: updateState.hasUpdate ? AppColors.expense.withValues(alpha: 0.1) : AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    ),
+                    child: Text(
+                      updateState.hasUpdate ? 'Update Available' : 'Latest',
+                      style: AppTypography.caption.copyWith(
+                        color: updateState.hasUpdate ? AppColors.expense : AppColors.income,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    HapticFeedback.lightImpact();
+                    final hasUpdate = await ref.read(updateServiceProvider.notifier).checkForUpdates(isManual: true);
+                    if (context.mounted) {
+                      if (hasUpdate) {
+                        showUpdateDialog(context, ref: ref);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("You're on the latest version of RYVE!"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
           // About Section
           Center(
             child: Column(
               children: [
                 Text('RYVE Personal Money OS', style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
-                const Text('Version 1.0.0 (Build 100) • Integer Precision', style: AppTypography.caption),
+                const Text('Version 1.0.0 • Shorebird CodePush Active', style: AppTypography.caption),
               ],
             ),
           ),

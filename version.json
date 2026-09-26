@@ -1,0 +1,7 @@
+{
+  "version": "1.0.1",
+  "buildNumber": 2,
+  "title": "Online Mode & Stability Update",
+  "releaseNotes": "• Added Online account option alongside Cash\n• Seamless background over-the-air updates\n• Database startup resilience & performance enhancements\n• Polished UI micro-interactions",
+  "forceUpdate": false
+}

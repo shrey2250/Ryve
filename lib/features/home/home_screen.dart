@@ -10,16 +10,35 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/currency_formatter.dart';
+import '../../core/services/update_service.dart';
 import '../../presentation/widgets/account_card.dart';
 import '../../presentation/widgets/shared_widgets.dart';
 import '../../presentation/widgets/transaction_widgets.dart';
+import '../../presentation/widgets/update_dialog.dart';
 
 /// Home Screen - Primary visual anchor with net balance, monthly overview, accounts, IOU summary, and recent activity.
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final updateService = ref.read(updateServiceProvider.notifier);
+      final hasUpdate = await updateService.checkForUpdates();
+      if (hasUpdate && mounted) {
+        showUpdateDialog(context, ref: ref);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final totalBalanceAsync = ref.watch(totalBalanceProvider);
     final accountsAsync = ref.watch(accountsProvider);
     final recentTransactionsAsync = ref.watch(recentTransactionsProvider);
