@@ -38,8 +38,20 @@ class DatabaseHelper {
       );
     }
 
-    final dir = await getApplicationDocumentsDirectory();
-    final path = join(dir.path, _dbName);
+    String path;
+    try {
+      if (defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.linux ||
+          defaultTargetPlatform == TargetPlatform.macOS) {
+        final dir = await getApplicationDocumentsDirectory();
+        path = join(dir.path, _dbName);
+      } else {
+        final dbFolder = await getDatabasesPath();
+        path = join(dbFolder, _dbName);
+      }
+    } catch (_) {
+      path = _dbName;
+    }
 
     return openDatabase(
       path,
@@ -53,7 +65,11 @@ class DatabaseHelper {
   /// Enable foreign key enforcement (SQLite requires explicit activation).
   Future<void> _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
-    await db.execute('PRAGMA journal_mode = WAL');
+    try {
+      await db.rawQuery('PRAGMA journal_mode = WAL');
+    } catch (e) {
+      debugPrint('[DatabaseHelper] WAL journal_mode skipped: $e');
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
