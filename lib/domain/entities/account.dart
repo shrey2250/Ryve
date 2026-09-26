@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 /// Account types in RYVE
 enum AccountType {
   cash('cash', 'Cash', '💵'),
+  online('online', 'Online', '🌐'),
   bank('bank', 'Bank', '🏦'),
   upi('upi', 'UPI', '📱'),
   creditCard('credit_card', 'Credit Card', '💳'),
@@ -50,6 +51,8 @@ class Account extends Equatable {
   /// Icon code point helper for UI display
   int get iconCodePoint {
     switch (type) {
+      case AccountType.online:
+        return 0xe351; // language / globe
       case AccountType.bank:
         return 0xe040; // account_balance
       case AccountType.upi:

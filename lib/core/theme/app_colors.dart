@@ -46,6 +46,7 @@ abstract class AppColors {
   static const Color bankColor = Color(0xFF4F46E5);
   static const Color upiColor = Color(0xFF8B5CF6);
   static const Color cashColor = Color(0xFF10B981);
+  static const Color onlineColor = Color(0xFF0EA5E9);
   static const Color cardColor = Color(0xFFF59E0B);
   static const Color otherColor = Color(0xFF0EA5E9);
 

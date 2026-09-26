@@ -31,7 +31,7 @@ abstract final class DatabaseSchema {
     CREATE TABLE $accounts (
       id          TEXT PRIMARY KEY,
       name        TEXT NOT NULL,
-      type        TEXT NOT NULL CHECK(type IN ('cash','bank','upi','credit_card','other')),
+      type        TEXT NOT NULL CHECK(type IN ('cash','online','bank','upi','credit_card','other')),
       balancePaise INTEGER NOT NULL DEFAULT 0,
       currency    TEXT NOT NULL DEFAULT 'INR',
       isArchived  INTEGER NOT NULL DEFAULT 0,

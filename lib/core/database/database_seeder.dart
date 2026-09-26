@@ -66,15 +66,55 @@ abstract final class DatabaseSeeder {
       DatabaseSchema.accounts,
       limit: 1,
     );
-    if (existing.isNotEmpty) return; // Already seeded
-
     final now = DateFormatter.toIso(DateTime.now());
+
+    if (existing.isNotEmpty) {
+      final hasOnline = await db.query(
+        DatabaseSchema.accounts,
+        where: 'type = ? OR name = ?',
+        whereArgs: ['online', 'Online'],
+        limit: 1,
+      );
+      if (hasOnline.isEmpty) {
+        await db.insert(
+          DatabaseSchema.accounts,
+          {
+            'id': _uuid.v4(),
+            'name': 'Online',
+            'type': 'online',
+            'balancePaise': 0,
+            'currency': 'INR',
+            'isArchived': 0,
+            'createdAt': now,
+            'updatedAt': now,
+          },
+        );
+      }
+      return;
+    }
+
+    // Seed default Cash account
     await db.insert(
       DatabaseSchema.accounts,
       {
         'id': _uuid.v4(),
         'name': 'Cash',
         'type': 'cash',
+        'balancePaise': 0,
+        'currency': 'INR',
+        'isArchived': 0,
+        'createdAt': now,
+        'updatedAt': now,
+      },
+    );
+
+    // Seed default Online account
+    await db.insert(
+      DatabaseSchema.accounts,
+      {
+        'id': _uuid.v4(),
+        'name': 'Online',
+        'type': 'online',
         'balancePaise': 0,
         'currency': 'INR',
         'isArchived': 0,

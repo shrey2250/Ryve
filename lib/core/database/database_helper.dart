@@ -59,6 +59,7 @@ class DatabaseHelper {
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: _onConfigure,
+      onOpen: _onOpen,
     );
   }
 
@@ -70,6 +71,10 @@ class DatabaseHelper {
     } catch (e) {
       debugPrint('[DatabaseHelper] WAL journal_mode skipped: $e');
     }
+  }
+
+  Future<void> _onOpen(Database db) async {
+    await DatabaseSeeder.seed(db);
   }
 
   Future<void> _onCreate(Database db, int version) async {
